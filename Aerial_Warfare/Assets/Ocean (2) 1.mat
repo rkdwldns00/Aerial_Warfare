@@ -32,7 +32,7 @@ Material:
     m_Floats:
     - _Cull: 0
     - _Glossiness: 0.631
-    - _Metallic: 0.16
+    - _Metallic: 1
     - _NormalStrength1: 0.17
     - _NormalStrength2: 0.8
     m_Colors:
