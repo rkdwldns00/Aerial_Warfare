@@ -1,6 +1,6 @@
 using Photon.Pun; // 유니티용 포톤 컴포넌트들
 using Photon.Realtime; // 포톤 서비스 관련 라이브러리
-using UnityEditor.XR;
+//using UnityEditor.XR;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +11,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public Text connectionInfoText; // 네트워크 정보를 표시할 텍스트
     public Button joinButton; // 룸 접속 버튼
-
+    
     // 게임 실행과 동시에 마스터 서버 접속 시도
     private void Start()
     {

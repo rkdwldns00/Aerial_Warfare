@@ -8,10 +8,15 @@ public class Bullet : MonoBehaviour
     public float age;
     void Start()
     {
+        
+    }
+
+    private void OnEnable()
+    {
         transform.rotation *= Quaternion.Euler(Random.Range(-age, age), Random.Range(-age, age), 0);
         RaycastHit hit;
         Physics.Raycast(transform.position, (transform.rotation) * Vector3.forward, out hit, range);
-        if (hit.collider != null && transform.tag != hit.transform.GetComponentInParent<Hitable>().tag && hit.transform.GetComponentInParent<Hitable>() != null)
+        if (hit.collider != null/* && transform.tag != hit.transform.GetComponentInParent<Hitable>().tag */&& hit.transform.GetComponentInParent<Hitable>() != null)
         {
             hit.transform.GetComponent<Hitable>().takeDamage(10f);
         }

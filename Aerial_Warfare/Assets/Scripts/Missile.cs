@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,6 +29,11 @@ public class Missile : Hitable
 
     protected override void Die()
     {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            base.Die();
+            return;
+        }
         Collider[] hits;
         hits = Physics.OverlapSphere(transform.position, radius,0);
         foreach(Collider hit in hits)
@@ -37,7 +43,8 @@ public class Missile : Hitable
                 hit.transform.GetComponent<Hitable>().takeDamage(damage);
             }
         }
-        Destroy(gameObject);
+        PhotonNetwork.Destroy(gameObject);
+        //Destroy(gameObject);
         base.Die();
     }
 }

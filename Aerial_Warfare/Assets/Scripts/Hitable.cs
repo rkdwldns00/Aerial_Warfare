@@ -1,22 +1,25 @@
+using Photon.Pun;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class Hitable : MonoBehaviour
+public class Hitable : MonoBehaviourPun
 { 
     public float maxHp;
     public GameObject explosion;
     GameManager gameManager;
     float realHp;
-    public float Hp {
+    public float Hp
+    {
         get
         {
             return realHp;
         }
         private set
         {
-            if(value <= 0f)
+            if (value <= 0f)
             {
                 realHp = 0f;
             }
@@ -32,9 +35,19 @@ public class Hitable : MonoBehaviour
         //StartCoroutine(onOff(1f));
     }
 
-    private void OnEnable()
+    private void Start()
     {
         Hp = maxHp;
+    }
+
+    private void OnEnable()
+    {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+        Hp = maxHp;
+        photonView.RPC("UpdateHp", RpcTarget.Others, Hp);
         if (transform.GetComponent<Player>() != null)
         {
             if (transform.CompareTag("team1"))
@@ -53,22 +66,39 @@ public class Hitable : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
         if(gameObject.activeSelf && transform.position.y <= 0f && transform.GetComponent<Player>() != null)
         {
             takeDamage(999);
         }
     }
 
+    [PunRPC]
     public void takeDamage(float damage)
     {
-
-        Hp -= damage;
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Hp -= damage;
+            photonView.RPC("UpdateHp",RpcTarget.Others,Hp);
+            photonView.RPC("takeDamage",RpcTarget.Others,damage);
+        }
         if (Hp <= 0f)
         {
             Die();
+            photonView.RPC("Die", RpcTarget.Others);
         }
     }
 
+    [PunRPC]
+    public void UpdateHp(float newHealth)
+    {
+        Hp = newHealth;
+    }
+
+    [PunRPC]
     protected virtual void Die()
     {
         if (explosion != null)
@@ -78,24 +108,39 @@ public class Hitable : MonoBehaviour
         //if (gameObject.GetComponent<Player>() != null)
         //{
         //}
+        if (PhotonNetwork.IsMasterClient)
+        {
+            //photonView.RPC("Die", RpcTarget.Others);
+            //photonView.RPC("RespawnRequest", RpcTarget.All);
+        }
+        
+        RespawnRequest();
+    }
+
+    [PunRPC]
+    void RespawnRequest()
+    {
         gameManager.Respawn(gameObject);
-        gameObject.SetActive(false);
+    }
+
+    [PunRPC]
+    public void spawnSet(Transform spawnPoint)
+    {
+        transform.position = spawnPoint.position;
+        transform.rotation = spawnPoint.rotation;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
         if(collision != null && collision.transform.GetComponentInParent<Hitable>())
         {
             float damage = collision.transform.GetComponentInParent<Hitable>().Hp;
             collision.transform.GetComponentInParent<Hitable>().takeDamage(Hp);
             takeDamage(damage);
         }
-    }
-
-    IEnumerator onOff(float timer)
-    {
-        yield return new WaitForSeconds(timer);
-        this.enabled = false;
-        this.enabled = true;
     }
 }
