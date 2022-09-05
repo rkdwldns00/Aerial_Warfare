@@ -8,6 +8,7 @@ public class Missile : Hitable
     public float speed;
     public float radius;
     public float damage;
+    public float raderRange;
     void Start()
     {
         
@@ -17,6 +18,19 @@ public class Missile : Hitable
     void Update()
     {
         transform.Translate(Vector3.forward * speed * Time.deltaTime);
+        Collider[] cols = Physics.OverlapSphere(transform.position, raderRange);
+        GameObject target = null;
+        foreach(Collider col in cols){
+            if(col.GetComponentInParent<Hitable>() != null && !col.GetComponentInParent<Hitable>().CompareTag(transform.tag) && target == null)
+            {
+                target = col.gameObject;
+                break;
+            }
+        }
+        if (target != null)
+        {
+            transform.LookAt(target.transform.position);
+        }
     }
 
 /*    private void OnCollisionEnter(Collision collision)
@@ -31,7 +45,7 @@ public class Missile : Hitable
     {
         if (!PhotonNetwork.IsMasterClient)
         {
-            base.Die();
+            //base.Die();
             return;
         }
         Collider[] hits;

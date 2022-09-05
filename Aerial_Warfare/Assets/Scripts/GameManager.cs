@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviourPun
 
     private void OnEnable()
     {
-        if (PhotonNetwork.CountOfPlayersOnMaster % 2 == 1)
+        if (LobbyManager.teamId == 1)
         {
             localPlayer = PhotonNetwork.Instantiate(PlayerPrefab.name, spawnPoint1.position, spawnPoint1.rotation);
             localPlayer.tag = "team1";

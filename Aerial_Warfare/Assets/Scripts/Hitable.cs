@@ -136,7 +136,7 @@ public class Hitable : MonoBehaviourPun
         {
             return;
         }
-        if(collision != null && collision.transform.GetComponentInParent<Hitable>())
+        if(collision != null && collision.transform.GetComponentInParent<Hitable>() && !collision.transform.GetComponentInParent<Hitable>().CompareTag(transform.tag))
         {
             float damage = collision.transform.GetComponentInParent<Hitable>().Hp;
             collision.transform.GetComponentInParent<Hitable>().takeDamage(Hp);

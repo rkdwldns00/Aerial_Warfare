@@ -8,10 +8,12 @@ using UnityEngine.UI;
 public class LobbyManager : MonoBehaviourPunCallbacks
 {
     private string gameVersion = "1"; // 게임 버전
-
+    public static int teamId = 0;
     public Text connectionInfoText; // 네트워크 정보를 표시할 텍스트
     public Button joinButton; // 룸 접속 버튼
-    
+    public GameObject team1Button;
+    public GameObject team2Button;
+
     // 게임 실행과 동시에 마스터 서버 접속 시도
     private void Start()
     {
@@ -65,5 +67,20 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         connectionInfoText.text = "방 참가 성공";
         PhotonNetwork.LoadLevel("Main");
+    }
+
+    public void setTeam(int i)
+    {
+        teamId = i;
+        if (i == 1)
+        {
+            team1Button.SetActive(false);
+            team2Button.SetActive(true);
+        }
+        else
+        {
+            team1Button.SetActive(true);
+            team2Button.SetActive(false);
+        }
     }
 }
