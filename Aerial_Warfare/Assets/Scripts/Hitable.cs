@@ -130,13 +130,25 @@ public class Hitable : MonoBehaviourPun
         transform.rotation = spawnPoint.rotation;
     }
 
+    public void sendTag(string s)
+    {
+        transform.tag = s;
+        photonView.RPC("applyTag", RpcTarget.Others, transform.tag);
+    }
+
+    [PunRPC]
+    public void applyTag(string s)
+    {
+        transform.tag = s;
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (!PhotonNetwork.IsMasterClient)
         {
             return;
         }
-        if(collision != null && collision.transform.GetComponentInParent<Hitable>() && !collision.transform.GetComponentInParent<Hitable>().CompareTag(transform.tag))
+        if(collision != null && collision.transform.GetComponentInParent<Hitable>()/* && !collision.transform.GetComponentInParent<Hitable>().CompareTag(transform.tag)*/)
         {
             float damage = collision.transform.GetComponentInParent<Hitable>().Hp;
             collision.transform.GetComponentInParent<Hitable>().takeDamage(Hp);

@@ -42,9 +42,11 @@ public class GameManager : MonoBehaviourPun
             localPlayer = PhotonNetwork.Instantiate(PlayerPrefab.name, spawnPoint2.position, spawnPoint2.rotation);
             localPlayer.tag = "team2";
         }
+        localPlayer.GetComponent<Hitable>().sendTag(localPlayer.tag);
         virtualCamera.Follow = localPlayer.GetComponent<Player>().cameraPos;
         virtualCamera.LookAt = localPlayer.GetComponent<Player>().cameraPos;
     }
+    
 
     // Update is called once per frame
     void Update()

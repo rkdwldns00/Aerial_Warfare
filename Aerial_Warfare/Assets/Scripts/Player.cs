@@ -85,7 +85,7 @@ public class Player : MonoBehaviourPun
             rigid.velocity += Vector3.down * 50f * Time.deltaTime;
             rigid.velocity *= 1-Time.deltaTime / 3f;
         }
-        transform.Rotate(new Vector3(inputSys.ver * 90, inputSys.yaw * 30, -inputSys.hor * 60) * Time.deltaTime * 2f);
+        transform.Rotate(new Vector3(inputSys.ver * 150, inputSys.yaw * 30, -inputSys.hor * 100) * Time.deltaTime);
         reloadCheck -= Time.deltaTime;
         secondReloadCheck -= Time.deltaTime;
         if (inputSys.fire && reloadCheck <= 0f)
@@ -119,6 +119,7 @@ public class Player : MonoBehaviourPun
             {
                 bullet.GetComponent<Missile>().tag = transform.tag;
             }
+            bullet.GetComponent<Rigidbody>().velocity = rigid.velocity;
         }
 
         

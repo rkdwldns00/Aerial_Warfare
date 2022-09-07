@@ -7,17 +7,18 @@ using UnityEngine.UI;
 // 마스터(매치 메이킹) 서버와 룸 접속을 담당
 public class LobbyManager : MonoBehaviourPunCallbacks
 {
-    private string gameVersion = "1"; // 게임 버전
-    public static int teamId = 0;
+    private string gameVersion = "2"; // 게임 버전
+    public static int teamId = 1;
     public Text connectionInfoText; // 네트워크 정보를 표시할 텍스트
     public Button joinButton; // 룸 접속 버튼
-    public GameObject team1Button;
-    public GameObject team2Button;
+    public Button team1Button;
+    public Button team2Button;
 
     // 게임 실행과 동시에 마스터 서버 접속 시도
     private void Start()
     {
         PhotonNetwork.GameVersion = gameVersion;
+        team1Button.interactable = false;
         PhotonNetwork.ConnectUsingSettings();
         joinButton.interactable = false;
         connectionInfoText.text = "마스터 서버에 접속 중...";
@@ -74,13 +75,13 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         teamId = i;
         if (i == 1)
         {
-            team1Button.SetActive(false);
-            team2Button.SetActive(true);
+            team1Button.interactable = false;
+            team2Button.interactable = true;
         }
         else
         {
-            team1Button.SetActive(true);
-            team2Button.SetActive(false);
+            team1Button.interactable = true;
+            team2Button.interactable = false;
         }
     }
 }
